@@ -1,5 +1,7 @@
 # The Oregon Trail CE
 A re-creation of MECC's "The Oregon Trail" for the TI-84 Plus CE calculator.
+
+![Game GIF](https://oldnewtimer.github.io/images/ort.gif)
                                                                                                                                          
 ## Installation
 
