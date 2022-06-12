@@ -1,0 +1,1689 @@
+[i]OREGON
+[i]"3FFF33333333FFF3F000F33FF3FFF00FF0000FE00EF000FFF00300E00E0000F33F0330E00E000F333F0333E00E000F3333F033E00E0000F333F033E00E0000F333F033E00E0000F33337777777777773777777777777777333377DD7777DD7733337D77D77D77D733333D77D33D77D3333333DD3333DD3335555555555555550"
+[i]'2018 OldNewTimer
+[i]Please Note: I do not own the The Oregon Trail video game. This game is made only for educational purposes and will not be sold.
+[i]Disclaimer: By using this software you agree to take all responsibility for any damages, hardware and software, caused to your calculator.
+[i]--------------------------------------
+[i] Program Name: The Oregon Trail CE
+[i] Author: Lane "OldNewTimer" Nickson
+[i] Language: ICE 2.0
+[i] Build: Release 2.0
+[i]--------------------------------------
+[i]VARIABLES
+[i]OXEN-OXEN
+[i]FOOD-FOOD
+[i]AMMO-AMMUNITION
+[i]PARTS-SPARE PARTS
+[i]PACE-PACE LEVEL
+[i]RATION-FOOD RATIONS
+[i]TRA/TRB-XandY Coords for Town/River
+[i]L3(NUM)-Reserved
+[i]L4(1)-AutoSave
+[i]A=GetKeyVar
+[i]B=Buffer
+[i]C=Cost
+[i]D=Distance
+[i]E=Eat(Rations)
+[i]F=Food
+[i]H=Health
+[i]I=Type of Item
+[i]J=Buffer 9
+[i]K=Defines if landmark is river or fort
+[i]L=Landmark
+[i]M=Money
+[i]N=Buffer 5
+[i]O=Buffer 6
+[i]P=Total Price
+[i]Q=Buffer 7
+[i]R=Reccomended Amount
+[i]S=How Many Items To Buy
+[i]T=Time(Days)
+[i]U=Buffer 8
+[i]V=Buffer 4
+[i]W=Weather
+[i]X=Buffer 2
+[i]Y=Options Y Value
+[i]Z=Buffer 3
+[i]*Please note that some variables may not be listed/have been changed since the last update
+[i]-------------------------Sprites-----------------------------
+[i]Load Dem Sprites, Load em' real good
+AsmComp(OGRAPH
+[i]------------------------INITIALIZATION-------------------------------
+[i]Initialize Stuff and all that Jazz
+0->A->B->C->D->E->F->G->H->I->J->K->L->M->N->O->P->Q->R->S->T->U->V->X->Y->Z->OXEN->FOOD->AMMO->PARTS->PACE->RATION->L4(1)->XZ
+80->Y
+20->TRB
+det(0
+Call LOGO
+
+[i]-----------------------------START-----------------------------------
+[i]==========Call  The Menu==========
+Lbl MAIN
+Call STAR
+Call OPTI
+SetColor(0)
+FillRectangle(0,230,320,240)
+Goto DIR
+
+[i]=========Show Logo=========
+Lbl LOGO
+FillScreen(0
+1->A
+51->B
+0->C
+FillScreen(255
+While B!=160
+	SetColor(255
+	FillRectangle(C,50,1,100
+	SetColor(224
+	[i]110
+	FillRectangle(A,50,50,50
+	SetColor(60
+	[i]160
+	FillRectangle(B,50,50,50
+	SetColor(239
+	[i]110
+	FillRectangle(A,100,100,50
+	A+1->A
+	B+1->B
+	C+1->C
+	Pause 5
+End
+SetTextScale(2,2
+PrintStringXY("OLDNEWTIMER PRESENTS",7,170
+Pause 1500
+Return
+
+[i]==========Title Screen==========
+Lbl STAR
+0->E
+SetTransparentColor(0)
+FillScreen(0
+ScaledSprite_NoClip(OB,20,20,4,2)
+ScaledSprite_NoClip(OB,20,200,4,2)
+SetTextFGColor(247)
+SetTextBGColor(0)
+SetTextScale(2,2)
+PrintStringXY("The Oregon Trail",40,0)
+SetTextScale(1,1)
+PrintStringXY("You may:",50,60
+PrintStringXY("1. Travel the trail",60,80
+PrintStringXY("2. Continue your jouney",60,90
+PrintStringXY("3. Learn about the trail",60,100
+PrintStringXY("4. Exit Game",60,110
+PrintStringXY("'18 OLDNEWTIMER",1,230
+PrintStringXY("VER: RELEASE 2.0",210,230
+Return
+[i]==========Options Select==========
+Lbl OPTI
+PrintStringXY(">",52,Y
+Y->B
+getKey->A
+If A=4
+	max(80,Y-10)->Y
+End
+If A=1
+	min(110,Y+10)->Y
+End
+If A=34
+	80->Y
+	Return
+End
+If A=26
+	90->Y
+	Return
+End
+If A=18
+	100->Y
+	Return
+End
+If A=35
+	110->Y
+	Return
+End
+If A=9 or A=54
+	Return
+End
+If Y!=B
+SetTextFGColor(0
+PrintStringXY(">",52,B)
+End
+SetTextFGColor(247
+Goto OPTI
+[i]==========Getkey==========
+Lbl GETK
+0->A
+While A=0
+getKey->A
+End
+Return
+[i]=========Direct to new part of program==========
+Lbl DIR
+If Y=80
+Goto TRAV
+End
+If Y=110
+Goto CRAS
+End
+If Y=100
+Call ABOU
+End
+[i]Loading 
+If Y=90
+	CloseAll
+   Alloc(28)->DATA
+   Open("OREFILE","r"->ZZ
+   Read(DATA,28,1,ZZ)
+   CloseAll
+	If ZZ=0
+		PrintStringXY("'18 OLDNEWTIMER",1,230
+		PrintStringXY("VER: RELEASE 2.0",210,230
+		SetTextFGColor(224
+		PrintStringXY("No Savefile Found!",50,130
+		Pause 1500
+		SetTextFGColor(247
+      	Goto MAIN
+   End
+   CloseAll
+   **{DATA->OXEN
+   **{DATA+2->FOOD
+   **{DATA+4->AMMO
+   **{DATA+6->PARTS
+   **{DATA+8->PACE
+   **{DATA+10->RATION
+   **{DATA+12->D
+   **{DATA+14->E
+   **{DATA+16->F
+   **{DATA+18->H
+   **{DATA+20->K
+   **{DATA+22->L
+   **{DATA+24->M
+   **{DATA+26->T
+   Goto SIZE
+End
+CloseAll
+Goto MAIN
+[i]-----------------------------LEARN ABOUT TRAIL--------------------------------
+Lbl ABOU
+SetColor(0
+FillRectangle(10,50,290,120)
+PrintStringXY("Try taking a journey by covered wagon",20,60
+PrintStringXY("across 2000 miles of plains, rivers,",20,70
+PrintStringXY("and mountains. Try! On The plains, will",20,80
+PrintStringXY("you slosh your oxen through m\ud and",20,90
+PrintStringXY("water-filled ruts or will you plod",20,100
+PrintStringXY("through dust six inches deep? How will",20,110
+PrintStringXY("you cross the rivers? If you have",20,120
+PrintStringXY("money, you might take a ferry (if there ",20,130
+PrintStringXY("is a ferry). Or, you can ford the river ",20,140
+PrintStringXY("and hope you and your wagon aren't",20,150
+PrintStringXY("swallowed alive!",20,160
+PrintStringXY("Press ENTER to continue",70,180
+Pause 
+SetColor(0
+FillRectangle(10,50,290,120)
+PrintStringXY("What about supplies? Well, if you're low",20,60
+PrintStringXY("on food you can hunt. You might get a",20,70
+PrintStringXY("buffalo.\.. you might. And there are bear",20,80
+PrintStringXY("in the mountain. At the Dalles, you can",20,90
+PrintStringXY("try navigating the Columbia River, but if",20,100
+PrintStringXY("running the rap\ids with a makeshift raft",20,110
+PrintStringXY("makes you queasy, better take the Barlow",20,120
+PrintStringXY("Road. If for some reason you don't",20,130
+PrintStringXY("survive -- your wagon burns, or thieves",20,140
+PrintStringXY("steal your oxen, or you run out of",20,150
+Pause 
+SetColor(0
+FillRectangle(10,50,290,120)
+PrintStringXY("provisions, or you die of cholera --",20,60
+PrintStringXY("don't give up. Try Again!",20,70
+Pause 
+Lbl CREDIT
+SetColor(0
+FillRectangle(10,50,290,120)
+PrintStringXY("The software team responsible for",40,60
+PrintStringXY("creation of this product includes",40,70
+PrintStringXY("Lane 'OldNewTimer' Nickson - Code/Graphics",15,90
+PrintStringXY("Cesium Wagon icon",40,110
+PrintStringXY("by TheLastMillennial",40,120
+Pause 
+SetColor(0
+FillRectangle(10,50,310,120)
+PrintStringXY("Beta Bugtesters",100,60
+PrintStringXY("CalebJ_",40,80
+PrintStringXY("dankcalculatorbro",40,90
+PrintStringXY("_iPhoenix_",40,100
+PrintStringXY("PT_",40,110
+PrintStringXY("ThGeekyScientist",40,120
+PrintStringXY("TheLastMillennial",40,130
+PrintStringXY("seanlego23",40,140
+PrintStringXY("jcgter777",40,150
+PrintStringXY("  Thanks guys!",100,160
+Pause 
+SetColor(0
+FillRectangle(10,50,290,120)
+PrintStringXY("Special thanks to PT_ for making",40,60
+PrintStringXY("this project possible with the",40,70
+PrintStringXY("revolutionary ICE Comp\iler.",40,80
+PrintStringXY("A big thank you also to",40,100
+PrintStringXY("beckadamtheinventor for tips on 2.0",40,110
+PrintStringXY("savefile creation.",40,120
+Pause 
+SetColor(0
+FillRectangle(10,50,290,120)
+PrintStringXY("This project is licensed under the",20,60
+PrintStringXY("Creative Commons BY-NC-SA 2.0 license.",20,70
+PrintStringXY("Visit www.tiny.cc/ontcc for more info.",20,80
+PrintStringXY("This game originated from:",20,100
+SetTextFGColor(224
+SetTextBGColor(247)
+PrintStringXY("CEMETECH",20,110
+SetTextFGColor(247
+SetTextBGColor(0)
+PrintStringXY("A site completely dedicated to calculator",20,120
+PrintStringXY("programming. Visit www.cemetech.net for",20,130
+PrintStringXY("more awesome programs!",20,140
+Pause 
+SetColor(0
+FillRectangle(10,50,290,120)
+PrintStringXY("Please note that this project was made",20,60
+PrintStringXY("for educational purposes only and is not",20,70
+PrintStringXY("allowed to be sold by itself or in a bundle",20,80
+PrintStringXY("This game is a recreation of Oregon Trail,",20,90
+PrintStringXY("released in 1990, which is owned by The",20,100
+PrintStringXY("Learning Company. The software",20,110
+PrintStringXY("development team does not own",20,120
+PrintStringXY("the actual game or its code.",20,130
+PrintStringXY("Thank You",20,150
+Pause 
+Return
+
+[i]MOST IMPORTANT PART (Kinda)
+[i]---------------------TRAVEL THE TRAIL--------------------
+Lbl TRAV
+80->Y
+SetTransparentColor(0)
+FillScreen(0
+ScaledSprite_NoClip(OB,20,20,4,2)
+ScaledSprite_NoClip(OB,20,200,4,2)
+SetTextFGColor(247)
+SetTextBGColor(0)
+SetTextScale(2,2)
+PrintStringXY("The Oregon Trail",40,0)
+SetTextScale(1,1)
+CloseAll
+   Alloc(28)->DATA
+   Open("OREFILE","r"->ZZ
+   Read(DATA,28,1,ZZ)
+   CloseAll
+	If ZZ!=0
+		SetTextFGColor(224
+	PrintStringXY("Are you sure you want to start",50,40
+	PrintStringXY("a new game? Your current savefile",50,50
+	PrintStringXY("will be deleted!",50,60
+	PrintStringXY("1. No",60,80
+	PrintStringXY("2. No",60,90
+	PrintStringXY("3. No",60,100
+	SetTextFGColor(7
+	PrintStringXY("4. Yes",60,110
+	SetTextFGColor(247
+	Call OPTI
+	If Y<110
+		Goto MAIN
+	End
+	End
+Call TTS
+80->Y
+Call OPTI
+[i]===========Sets Type Of Character==========
+Y/10-7->T
+If T=3
+	4->T
+End
+1600/T->M
+If Y=110
+Goto DIFF
+End
+Goto CHAR
+[i]==========Menu==========
+Lbl TTS
+SetColor(0
+FillRectangle(0,40,320,150)
+PrintStringXY("Many kinds of people made the trip",50,50
+PrintStringXY("to Oregon. You may:",50,60
+PrintStringXY("1. Be a banker from Boston",60,80
+PrintStringXY("2. Be a carpenter from Ohio",60,90
+PrintStringXY("3. Be a farmer from Illinois",60,100
+PrintStringXY("4. Find out the differences between",60,110
+PrintStringXY("these choices",60,120
+Return
+[i]=========Differences==========
+Lbl DIFF
+SetColor(0
+FillRectangle(0,50,320,150)
+PrintStringXY("Traveling to Oregon isn't easy! But if",20,60
+PrintStringXY("you're a banker, you'll have more money",20,70
+PrintStringXY("for supplies and services than a carpenter",20,80
+PrintStringXY("or a farmer.",20,90
+PrintStringXY("However, the harder you have to try, the",20,110
+PrintStringXY("more points you deserve! Therefore, the ",20,120
+PrintStringXY("farmer earns the greatest number of ",20,130
+PrintStringXY("points and the banker earns the least.",20,140
+PrintStringXY("Press ENTER to continue",70,180
+Pause 
+Goto TRAV
+[i]==========Meet The Party==========
+Lbl CHAR
+SetColor(0
+FillRectangle(0,50,320,150
+PrintStringXY("Meet Your Party",100,60
+ScaledSprite_NoClip(OC,50,80,3,3)
+PrintStringXY("Press ENTER to continue",70,180
+Pause 
+[i]----------------------SHOP-------------------------
+SetColor(0
+FillRectangle(0,50,320,150)
+PrintStringXY("Before leaving Independence you should",20,60
+PrintStringXY("buy equipment and supplies. You need to",20,70
+PrintStringXY("get oxen, food, spare parts, and amm\unition",20,80
+PrintStringXY("before it's too late. You don't have to ",20,90
+PrintStringXY("use all of your money.",20,100
+PrintStringXY("Spend wisely!",20,120
+PrintStringXY("Press ENTER to continue",70,180
+Pause 
+Call SHOP
+Goto GAME
+[i]SHOP
+Lbl SHOP
+SetColor(0
+FillRectangle(0,50,320,150
+PrintStringXY("Welcome to the shop!",90,50
+PrintStringXY("You may buy:",50,60
+PrintStringXY("1. Oxen --------- 40",60,80
+PrintStringXY("2. Food --------- 1",60,90
+PrintStringXY("3. Spare Parts -- 20",60,100
+PrintStringXY("4. Amm\unition -- 2",60,110
+PrintStringXY("Money Left: ",50,130
+PrintStringXY("Press ENTER to Buy Item",70,170
+PrintStringXY("Press 2ND to Continue",70,180
+SetTextXY(140,130)
+PrintUInt(M,4)
+80->Y
+Call OPTI
+If A=54
+Return
+End
+[i]=========Sets Shop Prices and Directs to Buy Screen==========
+Y/10-7->I
+If Y=80
+40->C
+3->R
+End
+If Y=90
+1->C
+200->R
+End
+If Y=100
+20->C
+3->R
+End
+If Y=110
+2->C
+100->R
+End
+[i]==========Buy Screen==========
+Lbl BUY
+0->S->P
+SetColor(0
+FillRectangle(0,50,320,150)
+PrintStringXY("Buy Item",50,50
+PrintStringXY("How Many? ____",60,60
+PrintStringXY("Recommended Amount ____",60,70
+PrintStringXY("Total Cost ____",60,80
+SetTextXY(201,69)
+PrintUInt(R,4)
+SetTextXY(134,79)
+PrintUInt(P,4)
+SetTextXY(129,59)
+PrintUInt(S,4)
+SetTextXY(140,90)
+PrintUInt(M,5)
+PrintStringXY("Money Left: ",50,90
+PrintStringXY("Press GRAPH to get 100 of the item.",40,160
+PrintStringXY("Use UP/DOWN ARROW KEYS to change amount",20,170
+PrintStringXY("Press ENTER to continue",70,180
+[i]==========Buy Amount?=========
+0->A
+While A!=9
+	getKey->A
+	S->B
+	P->X
+	If A=49
+		min(999,(100+S))->S
+	End
+	If A=4 and S<999
+		S+1->S
+	End
+	If A=1 and S>0
+		S-1->S
+	End
+	C*S->P
+	If S!=B or P!=X
+		SetTextXY(129,59)
+		PrintUInt(S,4)
+		SetTextXY(134,79)
+		PrintUInt(P,4)
+	End
+	If P>M
+		SetTextFGColor(224
+		PrintStringXY("Not enough money!",70,120
+		SetTextFGColor(247
+		0->S
+	End
+End
+[i]==========Checks If You Have Enough Money==========
+	If P>M
+	Goto BUY
+End
+If P<=M
+	If Y=80
+		S+OXEN->OXEN
+	End
+	If Y=90
+		S+FOOD->FOOD
+	End
+	If Y=100
+		S+PARTS->PARTS
+	End
+	If Y=110
+		S+AMMO->AMMO
+	End
+End
+If P<=M
+	M-P->M
+End
+Goto SHOP
+			
+[i]==========Start The Game Screen=========
+Lbl GAME
+FillRectangle(10,50,290,190)
+ScaledSprite_NoClip(OB,20,200,4,2)
+PrintStringXY("You're all set! You will now embark on",20,60
+PrintStringXY("a 2000 mile journey along the Oregon",20,70
+PrintStringXY("Trail to reach Willamette Valley. You ",20,80
+PrintStringXY("may not succeed  the first time, but",20,90
+PrintStringXY("keep trying. Good luck!",20,100
+PrintStringXY("Press ENTER to start game",65,180
+Pause 
+Call LAND
+0->X
+500->H
+300->L
+FOOD->F
+0->D
+0->T
+2->RATION->PACE
+Lbl BACK
+[i]Display Town/River #2 (Ignore this)
+	If L<=100
+		SetColor(0)
+		FillRectangle_NoClip(TRB,60,20,40)
+		TRB+(PACE*20)->TRB
+		If K=0
+	[i]fort
+	ScaledSprite_NoClip(5,TRB,60,2,2)
+End
+If K=1
+	[i]river
+	ScaledSprite_NoClip(4,TRB,60,3,1)
+End
+End
+FillScreen(0)
+SetColor(7)
+FillRectangle_NoClip(0,100,320,200)
+SetColor(223)
+FillRectangle_NoClip(0,160,320,200)
+[i]==========Display Graphics==========
+Lbl GRAF
+ScaledTransparentSprite_NoClip(OA,240,63,1,1)
+SetTextBGColor(255)
+SetTextFGColor(0)
+	Call FRES
+	If OXEN<1
+		Goto STUC
+	End
+Goto MOVE
+[i]==========Stats==========
+Lbl FRES
+SetTextBGColor(223)
+SetTextFGColor(0)
+PrintStringXY("Press ENTER to Size Up the Situation",30,165
+PrintStringXY("Days:",116,180
+SetTextXY(153,180)
+PrintUInt(T,5)
+[i]T=Days
+PrintStringXY("Health:",103,190
+SetTextXY(153,190)
+PrintUInt(H,5)
+[i]H=Health
+PrintStringXY("Food:",116,200
+SetTextXY(153,200)
+PrintUInt(FOOD,5)
+[i]F=Food
+PrintStringXY("Next Landmark:",50,210
+SetTextXY(153,210)
+PrintUInt(L,5)
+[i]L=Landmark
+PrintStringXY("Miles Traveled:",50,220
+SetTextXY(153,220)
+PrintUInt(D,5)
+[i]D=Miles Traveled
+SetTextFGColor(255)
+Return
+[i]=========Move Background=========
+Lbl MOVE
+0->A
+0->X
+While A!=9
+getKey->A
+ScaledSprite_NoClip(OD,X,10,7,1)
+X+1->X
+If X>320
+0->X
+Pause 900
+[i]==========Move Town/River==========
+If L<=100
+SetColor(0)
+FillRectangle_NoClip(TRB,60,PACE*20,40)
+TRB+(PACE*20)->TRB
+If K=1
+	[i]river
+	ScaledSprite_NoClip(OE,TRB,60,3,2)
+End
+If K=0
+	[i]fort
+	ScaledSprite_NoClip(OF,TRB,60,2,2)
+End
+	ScaledTransparentSprite_NoClip(OA,240,63,1,1)
+End
+[i]=========Random Events=========
+SetTextFGColor(223)
+SetTextBGColor(7)
+remainder(rand,601)->B
+			If B>=90 and B<=100
+				PrintStringXY("Found Wild Berries +50 Food",60,110
+				FOOD+50->FOOD
+				Pause 
+				SetColor(7)
+				FillRectangle_NoClip(0,100,320,50)
+				Goto USAT
+			End
+			Lbl FIXX
+			If B>=110 and B<=116
+				PrintStringXY("Your Wagon Broke. Try to Repair?",55,110
+				PrintStringXY("'Y='-Yes",10,120
+				PrintStringXY("'graph'-No",230,120
+				Call GETK
+[i]Yes
+				If A=53
+					remainder(rand,2)->X
+					If X=0
+						SetColor(7)
+						FillRectangle_NoClip(0,100,320,50)
+						PrintStringXY("Repaired!",110,110
+						Pause 
+						Goto USAT
+					End
+					If X=1
+						SetColor(7)
+						FillRectangle_NoClip(0,100,320,50)
+						PrintStringXY("Couldn't Repair!",100,110
+						Pause 
+						Goto NORE
+					End
+					Pause 
+				End
+[i]No
+				If A=49
+					Lbl NORE
+					SetColor(7)
+					FillRectangle_NoClip(0,100,320,50)
+					PrintStringXY("Use Spare Part?",100,110
+					PrintStringXY("'Y='-Yes",10,120
+					PrintStringXY("'graph'-No",230,120
+					Call GETK
+						If A=53 and PARTS>=1
+							PARTS-1->PARTS
+							SetColor(7)
+							FillRectangle_NoClip(0,100,320,50)
+							PrintStringXY("Repaired!",130,110
+							Pause 
+							Goto USAT
+						End
+						If PARTS>=1
+							SetColor(7)
+							FillRectangle_NoClip(0,100,320,50)
+							PrintStringXY("You Were Forced to Use a Spare Part!",40,110
+							PARTS-1->PARTS
+							Pause 
+						Goto USAT
+						End
+						If A=53
+							SetColor(7)
+							FillRectangle_NoClip(0,100,320,50)
+							PrintStringXY("You Don't Have Any Spare Parts!",60,110
+							PrintStringXY("You Are Stranded!",100,120
+							Pause 
+							Goto STUC
+						End
+						If A=49
+							Goto STUC
+						End
+					Goto NORE
+				End
+			Goto FIXX
+		End
+			If B>=101 and B<=110
+				If H>=30
+					PrintStringXY("Your Party Contracts a Disease- Lose 50 Health",0,110
+					Pause 
+					max((H-50),0)->H
+					Goto USAT
+				End
+				If H<30
+					Goto OVER
+				End
+			End
+			If B>=10 and B<=20
+				0->B
+				If FOOD>=60
+					PrintStringXY("A Theif Comes at Night and Steals 60 Food",25,110
+					FOOD-60->FOOD
+					Pause 
+					SetColor(7)
+					FillRectangle_NoClip(0,100,320,50)
+					Goto USAT
+				End
+				Goto USAT
+			End
+			If B>=20 and B<=30
+				PrintStringXY("You find an abandoned wagon with:",60,110
+				PrintStringXY("Oxen",60,120
+				SetTextXY(50,120)
+				remainder(rand,3)->B
+				PrintUInt(B,1)
+				OXEN+B->OXEN
+				
+				PrintStringXY("Food",70,130
+				SetTextXY(50,130)
+				remainder(rand,51)->B
+				PrintUInt(B,2)
+				FOOD+B->FOOD
+				
+				PrintStringXY("Spare Parts",60,140
+				SetTextXY(50,140)
+				remainder(rand,3)->B
+				PrintUInt(B,1)
+				PARTS+B->PARTS
+				
+				PrintStringXY("Amm\unition",70,150
+				SetTextXY(50,150)
+				remainder(rand,99)->B
+				PrintUInt(B,2)
+				AMMO+B->AMMO
+				
+				PrintStringXY("Money",160,120
+				SetTextXY(130,120)
+				remainder(rand,501)->B
+				PrintUInt(B,3)
+				M+B->M
+				Pause 
+				SetColor(7)
+				FillRectangle_NoClip(0,100,320,60)
+				Goto USAT
+			End
+			If B>=80 and B<=89
+				PrintStringXY("Wrong Trail- Lose One Day",70,110
+				Call RSTA
+				Pause 
+				SetColor(7)
+				FillRectangle_NoClip(0,100,320,50)
+				Goto USAT
+			End
+			If B=2
+				PrintStringXY("Your Party Has Died of Dysentery",60,110
+				Pause 
+				SetColor(7)
+				FillRectangle_NoClip(0,100,320,50)
+				Goto OVER
+				End
+			If B>50 and B<55
+				PrintStringXY("Extreme Weather- Lose One Day",60,110
+				Call RSTA
+				Pause 
+				SetColor(7)
+				FillRectangle_NoClip(0,100,320,50)
+				Goto USAT
+			End
+			If B>=310 and B<=315
+				PrintStringXY("One of your oxen died",70,110
+				OXEN-1->OXEN
+				Pause 
+				SetColor(7)
+				FillRectangle_NoClip(0,100,320,50)
+				Goto USAT
+			End
+Goto USAT
+Lbl RSTA
+1+T->T
+L4(1)+1->L4(1)
+If FOOD<=30
+0->FOOD
+(H-5)->H
+End
+If FOOD>=30
+FOOD-5*RATION->FOOD
+H+(5*RATION)->H
+End
+If H>500
+	500->H
+End
+If FOOD>1000
+	1000->FOOD
+End
+Return
+[i]=========Update Stats=========
+Lbl USAT
+SetColor(7)
+FillRectangle_NoClip(0,100,320,50)
+1+T->T
+L4(1)+1->L4(1)
+If FOOD<=30
+0->FOOD
+H-(5*PACE)->H
+End
+If FOOD>=30
+FOOD-(5*RATION)->FOOD
+H+(5*RATION)->H
+H-(5*PACE)->H
+End
+If L<=30 and K=0
+Goto TOWN
+End
+If L<=30 and K=1
+Goto RIVE
+End
+D+PACE*5->D
+max(0,L-PACE*10)->L
+If H>500
+	500->H
+End
+If FOOD>1000
+	1000->FOOD
+End
+If H<=30
+SetTextFGColor(223)
+SetTextBGColor(7)
+PrintStringXY("You Have No Health. Your Party Has Died!",30,110
+Call FRES
+Pause 
+Goto OVER
+End
+If D>=2000
+Goto WINN
+End
+Goto GRAF
+	End
+	End
+[i]==========SIZE UP SITUATION MENU==========
+Lbl SIZE
+FillScreen(0)
+SetColor(0)
+SetTextFGColor(223)
+SetTextBGColor(0)
+FillRectangle(0,50,320,150
+PrintStringXY("Size Up The Situation",90,50
+PrintStringXY("You may:",50,60
+PrintStringXY("1. Continue on the trail",60,80
+PrintStringXY("2. Check supplies and statistics",60,90
+PrintStringXY("3. Rest, Trade, or Hunt",60,100
+PrintStringXY("4. Change pace and food rations",60,110
+PrintStringXY("Press ENTER to continue",70,180
+PrintStringXY("Press 2ND to save and quit",65,190
+80->Y
+Call OPTI
+[i]Direct to options
+If A=54
+Goto STOP
+End
+If Y=80
+Goto BACK
+End
+If Y=90
+Goto STAT
+End
+If Y=100
+Call RTH
+Goto SIZE
+End
+If Y=110
+Goto PACE
+End
+
+[i]---------Shows Stats---------
+Lbl STAT
+SetColor(0)
+SetTextFGColor(223)
+FillRectangle(0,50,320,150
+PrintStringXY("Supplies and Statistics",90,50
+PrintStringXY("- Oxen",90,80
+SetTextXY(55,80)
+PrintUInt(OXEN,4)
+PrintStringXY("- Spare Parts",90,90
+SetTextXY(55,90)
+PrintUInt(PARTS,4)
+PrintStringXY("- Food",90,100
+If FOOD>=0
+SetTextXY(55,100)
+PrintUInt(FOOD,4)
+End
+PrintStringXY("- Amm\unition",90,110
+SetTextXY(55,110)
+PrintUInt(AMMO,4)
+PrintStringXY("- Days Traveled",90,120
+SetTextXY(55,120)
+PrintUInt(T,4)
+PrintStringXY("- Miles Traveled",90,130
+SetTextXY(45,130)
+PrintUInt(D,5)
+PrintStringXY("- Miles Until Oregon",90,140
+SetTextXY(45,140)
+PrintUInt(2000-D,5)
+PrintStringXY("- Pace Level",90,150
+SetTextXY(55,150)
+PrintUInt(PACE,4)
+PrintStringXY("- Health",90,160
+SetTextXY(55,160)
+PrintUInt(H,4)
+PrintStringXY("- Money",90,170
+SetTextXY(55,170)
+PrintUInt(M,4)
+PrintStringXY("Press ENTER to continue",70,190
+Pause 
+Goto SIZE
+
+[i]---------Rest Trade and Hunt Directory--------
+Lbl RTH
+FillScreen(0)
+SetColor(0)
+SetTextFGColor(223)
+SetTextBGColor(0)
+FillRectangle(0,50,320,150
+PrintStringXY("Rest, Trade, and Hunt",90,50
+PrintStringXY("You may:",50,60
+PrintStringXY("1. Rest",60,80
+PrintStringXY("2. Trade",60,90
+PrintStringXY("3. Hunt",60,100
+PrintStringXY("4. Go Back",60,110
+PrintStringXY("Press ENTER to continue",70,180
+80->Y
+Call OPTI
+If Y=80
+Call RSTA
+FillScreen(0)
+SetColor(0)
+SetTextFGColor(223)
+SetTextBGColor(0)
+FillRectangle(0,50,320,150
+PrintStringXY("Rested!",120,50
+PrintStringXY("Press ENTER to continue",70,180
+Pause 
+Return
+End
+If Y=90
+Call TRADE
+Call RSTA
+Return
+End
+If Y=100
+Call HUNT
+Return
+End
+If Y=110
+Return
+End
+Return
+[i]---------Change Pace/Rations----------
+Lbl PACE
+SetColor(0)
+SetTextFGColor(223)
+SetTextBGColor(0)
+FillRectangle(0,50,320,150
+PrintStringXY("Pace",130,50
+PrintStringXY("- Current Pace Level",90,80
+SetTextXY(80,80)
+PrintUInt(PACE,1)
+PrintStringXY("1 = Slow Speed",90,90
+PrintStringXY("2 = Medium Speed",90,100
+PrintStringXY("3 = Fast Speed",90,110
+PrintStringXY("Use ARROW KEYS to change amount",45,170
+PrintStringXY("Press ENTER to go continue",70,180
+1->A->B
+PACE->S
+0->X
+Call PACH
+SetColor(0)
+SetTextFGColor(223)
+SetTextBGColor(0)
+FillRectangle(0,50,320,150
+PrintStringXY("Rations",130,50
+PrintStringXY("- Current Ration Level",90,80
+SetTextXY(80,80)
+PrintUInt(RATION,1)
+PrintStringXY("1 = Meager",90,90
+PrintStringXY("2 = Adequate",90,100
+PrintStringXY("3 = Filling",90,110
+PrintStringXY("Use ARROW KEYS to change amount",45,170
+PrintStringXY("Press ENTER to continue",70,180
+1->A->B->X
+RATION->S
+Call PACH
+Goto SIZE
+Lbl PACH
+While A!=9
+getKey->A
+S->B
+If A=4 and S<3
+S+1->S
+End
+If A=1 and S>1
+S-1->S
+max(1,S)->S
+End
+If A=34
+	1->S
+End
+If A=26
+	2->S
+End
+If A=18
+	3->S
+End
+If S!=B
+SetTextXY(80,80)
+PrintUInt(S,1
+End
+		If X=1
+			S->RATION
+		End
+		If X=0
+			S->PACE
+		End
+End
+Return
+
+[i]----------TOWN----------
+Lbl TOWN
+FillScreen(0)
+SetColor(0)
+SetTextFGColor(223)
+SetTextBGColor(0)
+FillRectangle(0,50,320,150
+PrintStringXY("You've Reached a Town!",90,50
+PrintStringXY("You may:",50,60
+PrintStringXY("1. Continue on the trail",60,80
+PrintStringXY("2. Buy Supplies",60,90
+PrintStringXY("3. Rest, Trade, or Hunt",60,100
+PrintStringXY("4. Change pace and food rations",60,110
+PrintStringXY("Press ENTER to continue",70,180
+80->Y
+Call OPTI
+[i]Direct to options
+If Y=80
+Call LAND
+Goto BACK
+End
+If Y=90
+Call SHOP
+Goto TOWN
+End
+If Y=100
+Call RTH
+Goto TOWN
+End
+If Y=110
+Goto PACE
+End
+
+[i]----------RIVER----------
+Lbl RIVE
+FillScreen(0)
+SetColor(0)
+SetTextFGColor(223)
+SetTextBGColor(0)
+FillRectangle(0,50,320,150
+PrintStringXY("You've Reached a River!",90,50
+PrintStringXY("You may:",50,60
+PrintStringXY("1. Attempt to ford the river",60,80
+PrintStringXY("2. Caulk the wagon and float across",60,90
+PrintStringXY("3. Take a ferry across",60,100
+PrintStringXY("4. Trade",60,110
+PrintStringXY("Press ENTER to continue",70,180
+80->Y
+Call OPTI
+[i]Direct to options
+If Y=80
+Goto FORD
+End
+If Y=90
+Goto CAUK
+End
+If Y=100
+Goto FERY
+End
+If Y=110
+Call TRADE
+Goto RIVE
+End
+[i]ford the river
+Lbl FORD
+40->Z
+Goto RMOV
+[i]Caulk 
+Lbl CAUK
+30->Z
+Goto RMOV
+[i]Take Ferry 
+	Lbl FERY
+SetTextFGColor(223
+PrintStringXY("'Y='-Pay 50 to take the ferry",10,130
+PrintStringXY("'graph'- Cancel",10,140
+Call GETK
+If A=49
+	Goto RIVE
+End
+If M<50
+	FillScreen(0
+		PrintStringXY("You Don't Have Enough Money!",70,130
+		PrintStringXY("Press ENTER to continue",70,190
+	Pause 
+	Goto RIVE
+End
+	M-50->M
+	8->Z
+Goto RMOV
+Lbl RMOV
+FillScreen(0)
+SetColor(255)
+det(41,105,70,100,100)
+SetColor(237)
+FillRectangle_NoClip(106,71,98,98)
+SetTransparentColor(0)
+ScaledTransparentSprite_NoClip(OA,115,94,1,1)
+Pause 1000
+1->X
+SetColor(24)
+While X<=98
+det(41,106,71,X,98)
+ScaledTransparentSprite_NoClip(OA,115,94,1,1)
+X+1->X
+Pause 25
+End
+Pause 5000
+remainder(rand,101)->B
+If B<=Z
+PrintStringXY("Your Wagon Sunk! Your Party Has Died!",40,180
+PrintStringXY("Press ENTER to continue",70,190
+Pause 
+Goto OVER
+End
+1->X
+SetColor(237)
+While X<=98
+det(41,106,71,X,98)
+ScaledTransparentSprite_NoClip(OA,115,94,1,1)
+X+1->X
+Pause 25
+End
+PrintStringXY("Your Party Survived!",80,180
+PrintStringXY("Press ENTER to continue",70,190
+Pause 
+Call LAND
+Goto SIZE
+			
+
+	
+[i]---------Trade for resouces---------
+Lbl TRADE
+	Alloc(8)->DAT
+	OXEN->**{DAT
+	FOOD->**{DAT+2
+	PARTS->**{DAT+4
+	AMMO->**{DAT+6
+FillScreen(0)
+SetColor(0)
+SetTextFGColor(223)
+SetTextBGColor(0)
+FillRectangle(0,50,320,150
+PrintStringXY("Trade",110,50
+remainder(rand,101)->B
+If B>=0 and B<=50
+	PrintStringXY("Nobody wants to trade today",60,80
+	PrintStringXY("Press ENTER to continue",70,180
+	Pause 
+	Return
+End
+If B>50 and B<=100
+		PrintStringXY("A nearby trader will take your:",50,80
+		PrintStringXY("and give you:",100,100
+	remainder(rand,4)->B
+	If B=0
+		0->X
+		remainder(rand,3)->C
+			If C=0
+				1->C
+			End
+		SetTextXY(60,90)
+		PrintUInt(C,1)
+		PrintStringXY("Oxen",80,90
+		Call RTRA
+	End
+	If B=1
+		2->X
+		remainder(rand,101)->C
+			If C=0
+				1->C
+			End
+		SetTextXY(60,90)
+		PrintUInt(C,2)
+		PrintStringXY("Food",80,90
+		Call RTRA
+	End
+	If B=2
+		4->X
+			remainder(rand,3)->C
+			If C=0
+				1->C
+			End
+		SetTextXY(60,90)
+		PrintUInt(C,1)
+		PrintStringXY("Spare Parts",80,90
+		Call RTRA
+	End
+	If B=3
+		6->X
+			remainder(rand,99)->C
+			If C=0
+				1->C
+			End
+		SetTextXY(60,90)
+		PrintUInt(C,2)
+		PrintStringXY("Amm\unition",80,90
+		Call RTRA
+	End
+	If X!=Z
+		[i]yes/no
+		PrintStringXY("'Y='-Yes",10,120
+			PrintStringXY("'graph'-No",230,120
+		While A!=53 and A!=49
+				Call GETK
+		End
+		If A=53
+				If (**{DAT+X})>=C
+					(**{DAT+X})-C->**{DAT+X
+					(**{DAT+Z})+Q->**{DAT+Z
+					**{DAT->OXEN
+					**{DAT+2->FOOD
+					**{DAT+4->PARTS
+					**{DAT+6->AMMO
+					CloseAll
+					Call RSTA
+					Return
+				End
+		End
+		If (**{DAT+X})<C
+			FillScreen(0
+			PrintStringXY("You Don't Have That!",80,100
+			PrintStringXY("Press ENTER to continue",70,180
+			Call GETK
+				If A=42
+					Call EROR
+				End
+			Call RSTA
+			Return
+		End
+	End
+		If X=Z
+			FillScreen(0
+			PrintStringXY("Nobody wants to trade today",60,80
+			PrintStringXY("Press ENTER to continue",70,180
+			Pause 
+		End
+		Return
+	End
+Lbl RTRA
+remainder(rand,4)->V
+	If V=0
+		0->Z
+		remainder(rand,3)->Q
+		If Q=0
+				1->Q
+			End
+		SetTextXY(60,110)
+		PrintUInt(Q,1)
+		PrintStringXY("Oxen",80,110
+	End
+	If V=1
+		2->Z
+		remainder(rand,101)->Q
+		If Q=0
+				1->Q
+			End
+		SetTextXY(60,110)
+		PrintUInt(Q,2)
+		PrintStringXY("Food",80,110
+	End
+	If V=2
+		4->Z
+		remainder(rand,3)->Q
+			If Q=0
+				1->Q
+			End
+		SetTextXY(60,110)
+		PrintUInt(Q,1)
+		PrintStringXY("Spare Parts",80,110
+	End
+	If V=3
+		6->Z
+		remainder(rand,99)->Q
+			If Q=0
+				1->Q
+			End
+		SetTextXY(60,110)
+		PrintUInt(Q,2)
+		PrintStringXY("Amm\unition",80,110
+	End
+Return
+
+[i]----------Hunt for Food---------
+[i]HUNT
+Lbl HUNT
+CloseAll
+FillScreen(0)
+SetColor(0)
+SetTextFGColor(223)
+SetTextBGColor(0)
+FillRectangle(0,50,320,150
+120->X
+160->Y
+PrintStringXY("Hunt For Food",90,50
+PrintStringXY("Controls:",50,60
+PrintStringXY("ARROW KEYS to AIM",60,80
+PrintStringXY("ENTER/2ND to FIRE",60,90
+PrintStringXY("CLEAR to EXIT EARLY",60,100
+PrintStringXY("Press ENTER to continue",70,180
+remainder(rand,230)->V
+remainder(rand,100)->O
+	If O>=50
+		6->O
+	Else
+		
+		7->O
+	End
+0->Z->B->A->Q->N
+Pause 
+While B=0
+	SetDraw(1
+	SetColor(0
+	FillRectangle(20,0,320,220
+	SetTextBGColor(6
+	SetColor(6
+	FillRectangle_NoClip(0,0,20,240
+	FillRectangle_NoClip(0,215,320,40
+	SetTextXY(2,220)
+	PrintUInt(AMMO,3)
+	PrintStringXY("Ammm\unition",40,220
+	SetTextXY(2,230)
+	PrintUInt(N,3)
+	PrintStringXY("Food",40,230
+	SetTextBGColor(0
+	If O=6
+		Sprite(OG,Z,V)
+	Else
+		Sprite(OH,Z,V)
+	End
+	SetColor(224
+	HorizLine(Y,X,20)
+	VertLine(Y+10,X-10,20)
+	getKey->A
+	If A=4
+		max(10,X-9)->X
+	End
+	If A=1
+		min(200,X+9)->X
+	End
+	If A=3
+		min(310,Y+9)->Y
+	End
+	If A=2
+		max(10,Y-9)->Y
+	End
+	If A=9 or A=54
+		If Y>=Z and X>=V
+			If Y<=(Z+15) and X<=(V+15)
+				If AMMO>=1
+					SetTextBGColor(6
+					PrintStringXY("Hit!",130,225
+					Blit(1
+					SetTextBGColor(0
+					N+25->N
+					remainder(rand,230)->V
+					remainder(rand,100)->O
+					If O>=50
+						6->O
+					Else
+						7->O
+					End
+					Pause 
+				End
+			End
+		End
+		If AMMO>=1
+			AMMO-1->AMMO
+		End
+	End
+	If A=15
+		1->B
+	End
+	Q+1->Q
+	If V>=190 or V<0
+		remainder(rand,210)->V
+		remainder(rand,100)->O
+		remainder(rand,100)->W
+		If O>=50
+			6->O
+		Else
+			7->O
+		End
+	End
+	If Z>=288 or Z<20
+		max(20,(remainder(rand,288)))->Z
+		remainder(rand,100)->O
+		remainder(rand,100)->W
+		If O>=50
+			6->O
+		Else
+			7->O
+		End
+	End
+	If W>50
+		(remainder(rand,3)+Z)->Z
+		(remainder(rand,3)+V)->V
+	Else
+		(Z-(remainder(rand,3))->Z
+		(V-(remainder(rand,3))->V
+	End
+	If Q>=1000
+		1->B
+	End
+	Blit(1
+	Pause 13
+End
+	
+Lbl SHOT
+FOOD+(min(100,N))->FOOD
+SetDraw(0)
+FillScreen(0)
+PrintStringXY("From the animals you shot, you got",50,50
+SetTextXY(50,60)
+PrintUInt(N,3)
+PrintStringXY("pounds of meat. You can carry a",80,60
+PrintStringXY("maxim\um of 100 pounds of meat back",50,70
+PrintStringXY("to the wagon",50,80
+PrintStringXY("Press ENTER to continue",70,180
+Pause 
+Return
+
+[i]----------Stuck (No Spare Parts or Oxen)----------
+Lbl STUC
+If H<=30
+Call FRES
+Pause 
+Goto OVER
+End
+CloseAll
+   Alloc(28)->DATA
+   Open("OREFILE","r"->ZZ
+   Read(DATA,28,1,ZZ)
+   CloseAll
+	While ZZ=0
+		Goto STOP
+	End
+If PARTS>=1 and OXEN>=1
+FillScreen(0)
+SetColor(0)
+SetTextFGColor(223)
+SetTextBGColor(0)
+FillRectangle(0,50,320,150
+PrintStringXY("You repaired the Wagon!",70,50
+PrintStringXY("Press ENTER to continue",70,180
+Goto SIZE
+End
+FillScreen(0)
+SetColor(0)
+SetTextFGColor(223)
+SetTextBGColor(0)
+FillRectangle(0,50,320,150
+PrintStringXY("You're Stuck",90,50
+PrintStringXY("You may:",50,60
+PrintStringXY("1. Try to trade for supplies",60,80
+PrintStringXY("2. Check supplies and statistics",60,90
+PrintStringXY("3. Rest",60,100
+PrintStringXY("4. Give Up",60,110
+PrintStringXY("Press ENTER to continue",70,180
+Call OPTI
+If Y=80
+Call TRADE
+Call RSTA
+Goto STUC
+End
+If Y=90
+Call ASTA
+Goto STUC
+End
+If Y=100
+Call RSTA
+FillScreen(0)
+SetColor(0)
+SetTextFGColor(223)
+SetTextBGColor(0)
+FillRectangle(0,50,320,150
+		PrintStringXY("Rested!",120,50
+		PrintStringXY("Food Lost",125,60
+		SetTextXY(105,60)
+		PrintUInt(15*RATION,2)
+PrintStringXY("Press ENTER to continue",70,180
+Pause 
+Goto STUC
+		End
+If Y=110
+Goto OVER
+End
+Goto STUC
+[i]----------Auxillary Stat Display (For Calling)-----
+Lbl ASTA
+SetColor(0)
+SetTextFGColor(223)
+FillRectangle(0,50,320,150
+PrintStringXY("Supplies and Statistics",90,50
+PrintStringXY("- Oxen",90,80
+SetTextXY(55,80)
+PrintUInt(OXEN,4)
+PrintStringXY("- Spare Parts",90,90
+SetTextXY(55,90)
+PrintUInt(PARTS,4)
+PrintStringXY("- Food",90,100
+If FOOD>=0
+SetTextXY(55,100)
+PrintUInt(FOOD,4)
+End
+PrintStringXY("- Amm\unition",90,110
+SetTextXY(55,110)
+PrintUInt(AMMO,4)
+PrintStringXY("- Days Traveled",90,120
+SetTextXY(55,120)
+PrintUInt(T,4)
+PrintStringXY("- Miles Traveled",90,130
+SetTextXY(45,130)
+PrintUInt(D,5)
+PrintStringXY("- Miles Until Oregon",90,140
+SetTextXY(45,140)
+PrintUInt(2000-D,5)
+PrintStringXY("- Pace Level",90,150
+SetTextXY(55,150)
+PrintUInt(PACE,4)
+PrintStringXY("- Health",90,160
+SetTextXY(55,160)
+PrintUInt(H,4)
+PrintStringXY("- Money",90,170
+SetTextXY(55,170)
+PrintUInt(M,4)
+PrintStringXY("Press ENTER to continue",70,190
+Pause 
+Return
+[i]==========SET LANDMARK DISTANCE==========
+Lbl LAND
+While B<300
+		remainder(rand,600)->B
+End
+remainder(rand,2)->K
+0->TRB
+B->L
+Return
+[i]----------WINNER----------
+Lbl WINN
+FillScreen(31)
+SetColor(7)
+FillRectangle_NoClip(0,100,320,200)
+SetColor(223)
+FillRectangle_NoClip(0,160,320,200)
+ScaledTransparentSprite_NoClip(OA,100,63,1,1)
+SetTextScale(1,1
+SetTextFGColor(0
+SetTextBGColor(223
+PrintStringXY("Willamette Valley, Oregon",65,190)
+PrintStringXY("Thanks for Playing! -OldNewTimer",45,210)
+PrintStringXY("Press ENTER to End Game",70,230
+SetColor(235)
+SetTextScale(2,2
+PrintStringXY("YOU MADE IT!",73,170)
+SetTextScale(1,1
+Pause 
+0->X
+While X<241
+ShiftUp(1
+X+1->X
+Pause 1
+End
+Pause 1500
+SetColor(0
+FillRectangle(0,0,320,240)
+SetTextFGColor(247
+SetTextBGColor(0
+PrintStringXY("Press ENTER to continue",70,180
+80->Y
+CloseAll
+DeleteVar("OREFILE",21)
+Call CREDIT
+Goto MAIN
+[i]----------GAME OVER----------
+Lbl OVER
+FillScreen(0)
+[i]Display Tombstone
+SetColor(171)
+FillRectangle_NoClip(0,150,320,200)
+SetColor(222)
+FillRectangle(50,50,101,160)
+FillCircle(100,50,50)
+SetTextBGColor(222)
+SetTextFGColor(0)
+PrintStringXY("Everyone in",60,60)
+PrintStringXY("your party",63,70)
+PrintStringXY("has died!",68,80)
+PrintStringXY("Better luck",60,100)
+PrintStringXY("next time!",64,110)
+SetTextScale(2,2
+SetTextBGColor(0)
+SetTextFGColor(224)
+PrintStringXY("GAME OVER",170,100)
+CloseAll
+DeleteVar("OREFILE",21)
+Pause 3000
+0->X
+SetClipRegion(0,0,320,240)
+While X<241
+det(46,1)
+X+1->X
+Pause 1
+End
+	0->A->B->C->D->E->F->G->H->I->J->K->L->M->N->O->P->Q->R->S->T->U->V->X->Y->Z->OXEN->FOOD->AMMO->PARTS->PACE->RATION->XZ
+80->Y
+Goto MAIN
+[i]The Following is an Easter Egg. Please avert your eyes now
+[i]Error
+Lbl EROR
+SetColor(24)
+SetTextBGColor(24)
+SetTextFGColor(223)
+SetTextScale(1,1)
+FillRectangle(0,0,320,250)
+PrintStringXY("THE OREGON TRAIL CE",81,90)
+PrintStringXY("AN ERROR HAS OCCURED",75,110)
+Pause 
+PrintStringXY("Ox5 I fooled you!",50,120)
+PrintStringXY("Here's 1 ox for your troubles!",50,130)
+PrintStringXY("(Just don't tell anyone else about",50,140)
+PrintStringXY("about this, Ok? I don't want anyone",50,150)
+PrintStringXY("else finding out I live here!)",50,160)
+PrintStringXY("-OldNewTimer",50,170)
+OXEN+1->OXEN
+SetTextFGColor(247
+SetTextBGColor(0
+Pause 
+Return
+[i]AutoSave
+
+[i]Saving 
+Lbl SAVE
+   CloseAll
+   Alloc(28)->DATA
+   OXEN->**{DATA
+   FOOD->**{DATA+2
+   AMMO->**{DATA+4
+   PARTS->**{DATA+6
+   PACE->**{DATA+8
+   RATION->**{DATA+10
+   D->**{DATA+12
+   E->**{DATA+14
+   F->**{DATA+16
+   H->**{DATA+18
+   K->**{DATA+20
+   L->**{DATA+22
+   M->**{DATA+24
+   T->**{DATA+26
+   CloseAll
+   Open("OREFILE","w"->ZZ
+   Write(DATA,28,2,ZZ
+   SetArchiveStatus(1,ZZ)
+   Close(ZZ
+Return
+[i]End Program
+Lbl NOSA
+CloseAll
+DeleteVar("OREFILE",21)
+Goto CRAS
+Lbl STOP
+Call SAVE
+Lbl CRAS
+0->A->B->C->D->E->F->G->H->I->J->K->L->M->N->O->P->Q->R->S->T->U->V->X->Y->Z->OXEN->FOOD->AMMO->PARTS->PACE->RATION->XZ
+det(1
