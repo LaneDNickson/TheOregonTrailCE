@@ -39,6 +39,9 @@ game's thread (https://www.cemetech.net/forum/viewtopic.php?t=14530).
 
 ## Manual Compilation
 The source code can be compiled using PT_'s ICE Comiler 2.0, located at https://www.cemetech.net/downloads/files/1481/x1481
+### File Descriptions
+- OSOURCE.8xp and OSOURCE.txt (plaintext): All game logic
+- OGRAPH.8xp and OGRAPH.txt (plaintext): Raw data for all graphical assets (generated with ConvPNG)
 
 ## Licensing
 The Oregon Trail CE is licensed under the Creative Commons BY-NC-SA 4.0 license.
